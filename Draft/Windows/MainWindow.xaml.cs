@@ -24,12 +24,13 @@ namespace Draft
         {
             InitializeComponent();
             Models.user10Entities entities = new Models.user10Entities();
-            types.ItemsSource = entities.material_type.ToList();
-            MaterialList.ItemsSource = entities.material_type.ToList();
-            //MaterialList.ItemSource = entities.materials_type.ToList();
+            
+            TypesCb.ItemsSource = entities.material_type.ToList();
+
+            MaterialList.ItemsSource = entities.materials.ToList();
 
         }
-         
+
         private void TextBox_MouseEnter(object sender, MouseEventArgs e)
         {
             SearchTb.Text = "";
@@ -40,9 +41,21 @@ namespace Draft
             SearchTb.Text = "Введите для поиска";
         }
 
-        private void exitBtn_Click(object sender, RoutedEventArgs e)
+        
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Close();
+        }
+
+        private void Materials_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

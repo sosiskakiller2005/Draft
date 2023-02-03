@@ -4,16 +4,13 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="Хранилище user10Model" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
-        <!--Ошибки, обнаруженные при создании:
-предупреждение 6002: В таблице или представлении "user10.dbo.material_type" не определен первичный ключ. Ключ был выведен, а определение таблицы или представления было создано в режиме только для чтения.-->
+    <Schema Namespace="Хранилище user10Model" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="material_type">
           <Key>
             <PropertyRef Name="ID" />
-            <PropertyRef Name="material_type" />
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
-          <Property Name="material_type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="material_type" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="materials">
           <Key>
@@ -21,7 +18,7 @@
           </Key>
           <Property Name="ID" Type="int" Nullable="false" />
           <Property Name="material_name" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="material_type" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="material_type" Type="int" Nullable="false" />
           <Property Name="image" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="price" Type="int" Nullable="false" />
           <Property Name="amount" Type="int" Nullable="false" />
@@ -72,15 +69,34 @@
           <Property Name="version" Type="int" />
           <Property Name="definition" Type="varbinary(max)" />
         </EntityType>
-        <Association Name="FK_material_type_materials">
-          <End Role="materials" Type="Self.materials" Multiplicity="1" />
+        <EntityType Name="type_material">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="type_material" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_material_type_type_material">
+          <End Role="type_material" Type="Self.type_material" Multiplicity="1" />
           <End Role="material_type" Type="Self.material_type" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="materials">
+            <Principal Role="type_material">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="material_type">
+              <PropertyRef Name="material_type" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_materials_material_type1">
+          <End Role="material_type" Type="Self.material_type" Multiplicity="1" />
+          <End Role="materials" Type="Self.materials" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="material_type">
               <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="materials">
+              <PropertyRef Name="material_type" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -133,21 +149,21 @@
           </ReferentialConstraint>
         </Association>
         <EntityContainer Name="Хранилище user10ModelContainer">
+          <EntitySet Name="material_type" EntityType="Self.material_type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="materials" EntityType="Self.materials" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="measure" EntityType="Self.measure" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="possible_supply" EntityType="Self.possible_supply" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="supply" EntityType="Self.supply" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="supply_type" EntityType="Self.supply_type" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="material_type" EntityType="Self.material_type" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [material_type].[ID] AS [ID], 
-    [material_type].[material_type] AS [material_type]
-    FROM [dbo].[material_type] AS [material_type]</DefiningQuery>
-          </EntitySet>
-          <AssociationSet Name="FK_material_type_materials" Association="Self.FK_material_type_materials">
-            <End Role="materials" EntitySet="materials" />
+          <EntitySet Name="type_material" EntityType="Self.type_material" Schema="dbo" store:Type="Tables" />
+          <AssociationSet Name="FK_material_type_type_material" Association="Self.FK_material_type_type_material">
+            <End Role="type_material" EntitySet="type_material" />
             <End Role="material_type" EntitySet="material_type" />
+          </AssociationSet>
+          <AssociationSet Name="FK_materials_material_type1" Association="Self.FK_materials_material_type1">
+            <End Role="material_type" EntitySet="material_type" />
+            <End Role="materials" EntitySet="materials" />
           </AssociationSet>
           <AssociationSet Name="FK_materials_measure" Association="Self.FK_materials_measure">
             <End Role="measure" EntitySet="measure" />
@@ -166,27 +182,69 @@
             <End Role="supply" EntitySet="supply" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="user10Model" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="user10Entities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="material_type" EntityType="user10Model.material_type" />
+          <EntitySet Name="materials" EntityType="user10Model.materials" />
+          <EntitySet Name="measure" EntityType="user10Model.measure" />
+          <EntitySet Name="possible_supply" EntityType="user10Model.possible_supply" />
+          <EntitySet Name="supply" EntityType="user10Model.supply" />
+          <EntitySet Name="supply_type" EntityType="user10Model.supply_type" />
+          <EntitySet Name="sysdiagrams" EntityType="user10Model.sysdiagrams" />
+          <EntitySet Name="type_material" EntityType="user10Model.type_material" />
+          <AssociationSet Name="FK_material_type_type_material" Association="user10Model.FK_material_type_type_material">
+            <End Role="type_material" EntitySet="type_material" />
+            <End Role="material_type" EntitySet="material_type" />
+          </AssociationSet>
+          <AssociationSet Name="FK_materials_material_type1" Association="user10Model.FK_materials_material_type1">
+            <End Role="material_type" EntitySet="material_type" />
+            <End Role="materials" EntitySet="materials" />
+          </AssociationSet>
+          <AssociationSet Name="FK_materials_measure" Association="user10Model.FK_materials_measure">
+            <End Role="measure" EntitySet="measure" />
+            <End Role="materials" EntitySet="materials" />
+          </AssociationSet>
+          <AssociationSet Name="FK_possible_supply_materials" Association="user10Model.FK_possible_supply_materials">
+            <End Role="materials" EntitySet="materials" />
+            <End Role="possible_supply" EntitySet="possible_supply" />
+          </AssociationSet>
+          <AssociationSet Name="FK_possible_supply_supply" Association="user10Model.FK_possible_supply_supply">
+            <End Role="supply" EntitySet="supply" />
+            <End Role="possible_supply" EntitySet="possible_supply" />
+          </AssociationSet>
+          <AssociationSet Name="FK_supply_supply_type" Association="user10Model.FK_supply_supply_type">
+            <End Role="supply_type" EntitySet="supply_type" />
+            <End Role="supply" EntitySet="supply" />
+          </AssociationSet>
+        </EntityContainer>
+        <EntityType Name="material_type">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="material_type1" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="type_material" Relationship="user10Model.FK_material_type_type_material" FromRole="material_type" ToRole="type_material" />
+          <NavigationProperty Name="materials" Relationship="user10Model.FK_materials_material_type1" FromRole="material_type" ToRole="materials" />
+        </EntityType>
         <EntityType Name="materials">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="material_name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="material_type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="image" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="material_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="material_type" Type="Int32" Nullable="false" />
+          <Property Name="image" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="price" Type="Int32" Nullable="false" />
           <Property Name="amount" Type="Int32" Nullable="false" />
           <Property Name="min_amount" Type="Int32" Nullable="false" />
           <Property Name="pack_amount" Type="Int32" Nullable="false" />
           <Property Name="measure" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="material_type1" Relationship="Self.FK_material_type_materials" FromRole="materials" ToRole="material_type" />
-          <NavigationProperty Name="measure1" Relationship="Self.FK_materials_measure" FromRole="materials" ToRole="measure" />
-          <NavigationProperty Name="possible_supply" Relationship="Self.FK_possible_supply_materials" FromRole="materials" ToRole="possible_supply" />
+          <NavigationProperty Name="material_type1" Relationship="user10Model.FK_materials_material_type1" FromRole="materials" ToRole="material_type" />
+          <NavigationProperty Name="measure1" Relationship="user10Model.FK_materials_measure" FromRole="materials" ToRole="measure" />
+          <NavigationProperty Name="possible_supply" Relationship="user10Model.FK_possible_supply_materials" FromRole="materials" ToRole="possible_supply" />
         </EntityType>
         <EntityType Name="measure">
           <Key>
@@ -194,7 +252,7 @@
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="measure1" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="materials" Relationship="Self.FK_materials_measure" FromRole="measure" ToRole="materials" />
+          <NavigationProperty Name="materials" Relationship="user10Model.FK_materials_measure" FromRole="measure" ToRole="materials" />
         </EntityType>
         <EntityType Name="possible_supply">
           <Key>
@@ -203,64 +261,75 @@
           <Property Name="ID" Type="Int32" Nullable="false" />
           <Property Name="Material_name" Type="Int32" Nullable="false" />
           <Property Name="Possible_supply1" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="materials" Relationship="Self.FK_possible_supply_materials" FromRole="possible_supply" ToRole="materials" />
-          <NavigationProperty Name="supply" Relationship="Self.FK_possible_supply_supply" FromRole="possible_supply" ToRole="supply" />
+          <NavigationProperty Name="materials" Relationship="user10Model.FK_possible_supply_materials" FromRole="possible_supply" ToRole="materials" />
+          <NavigationProperty Name="supply" Relationship="user10Model.FK_possible_supply_supply" FromRole="possible_supply" ToRole="supply" />
         </EntityType>
         <EntityType Name="supply">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="supply_name" Type="String" MaxLength="50" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="supply_name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="supply_type" Type="Int32" Nullable="false" />
-          <Property Name="INN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="INN" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="rating" Type="Int32" Nullable="false" />
-          <Property Name="date" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="possible_supply" Relationship="Self.FK_possible_supply_supply" FromRole="supply" ToRole="possible_supply" />
-          <NavigationProperty Name="supply_type1" Relationship="Self.FK_supply_supply_type" FromRole="supply" ToRole="supply_type" />
+          <Property Name="date" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="possible_supply" Relationship="user10Model.FK_possible_supply_supply" FromRole="supply" ToRole="possible_supply" />
+          <NavigationProperty Name="supply_type1" Relationship="user10Model.FK_supply_supply_type" FromRole="supply" ToRole="supply_type" />
         </EntityType>
         <EntityType Name="supply_type">
           <Key>
             <PropertyRef Name="ID" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="supply_type1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="supply" Relationship="Self.FK_supply_supply_type" FromRole="supply_type" ToRole="supply" />
+          <Property Name="supply_type1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="supply" Relationship="user10Model.FK_supply_supply_type" FromRole="supply_type" ToRole="supply" />
         </EntityType>
         <EntityType Name="sysdiagrams">
           <Key>
             <PropertyRef Name="diagram_id" />
           </Key>
-          <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
           <Property Name="principal_id" Type="Int32" Nullable="false" />
           <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="version" Type="Int32" />
           <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
         </EntityType>
-        <EntityType Name="material_type">
+        <EntityType Name="type_material">
           <Key>
             <PropertyRef Name="ID" />
-            <PropertyRef Name="material_type1" />
           </Key>
           <Property Name="ID" Type="Int32" Nullable="false" />
-          <Property Name="material_type1" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="materials" Relationship="Self.FK_material_type_materials" FromRole="material_type" ToRole="materials" />
+          <Property Name="type_material1" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="material_type" Relationship="user10Model.FK_material_type_type_material" FromRole="type_material" ToRole="material_type" />
         </EntityType>
-        <Association Name="FK_material_type_materials">
-          <End Role="materials" Type="Self.materials" Multiplicity="1" />
-          <End Role="material_type" Type="Self.material_type" Multiplicity="*" />
+        <Association Name="FK_material_type_type_material">
+          <End Type="user10Model.type_material" Role="type_material" Multiplicity="1" />
+          <End Type="user10Model.material_type" Role="material_type" Multiplicity="*" />
           <ReferentialConstraint>
-            <Principal Role="materials">
+            <Principal Role="type_material">
               <PropertyRef Name="ID" />
             </Principal>
             <Dependent Role="material_type">
+              <PropertyRef Name="material_type1" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_materials_material_type1">
+          <End Type="user10Model.material_type" Role="material_type" Multiplicity="1" />
+          <End Type="user10Model.materials" Role="materials" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="material_type">
               <PropertyRef Name="ID" />
+            </Principal>
+            <Dependent Role="materials">
+              <PropertyRef Name="material_type" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_materials_measure">
-          <End Role="measure" Type="Self.measure" Multiplicity="1" />
-          <End Role="materials" Type="Self.materials" Multiplicity="*" />
+          <End Type="user10Model.measure" Role="measure" Multiplicity="1" />
+          <End Type="user10Model.materials" Role="materials" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="measure">
               <PropertyRef Name="ID" />
@@ -271,8 +340,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_possible_supply_materials">
-          <End Role="materials" Type="Self.materials" Multiplicity="1" />
-          <End Role="possible_supply" Type="Self.possible_supply" Multiplicity="*" />
+          <End Type="user10Model.materials" Role="materials" Multiplicity="1" />
+          <End Type="user10Model.possible_supply" Role="possible_supply" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="materials">
               <PropertyRef Name="ID" />
@@ -283,8 +352,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_possible_supply_supply">
-          <End Role="supply" Type="Self.supply" Multiplicity="1" />
-          <End Role="possible_supply" Type="Self.possible_supply" Multiplicity="*" />
+          <End Type="user10Model.supply" Role="supply" Multiplicity="1" />
+          <End Type="user10Model.possible_supply" Role="possible_supply" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="supply">
               <PropertyRef Name="ID" />
@@ -295,8 +364,8 @@
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_supply_supply_type">
-          <End Role="supply_type" Type="Self.supply_type" Multiplicity="1" />
-          <End Role="supply" Type="Self.supply" Multiplicity="*" />
+          <End Type="user10Model.supply_type" Role="supply_type" Multiplicity="1" />
+          <End Type="user10Model.supply" Role="supply" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="supply_type">
               <PropertyRef Name="ID" />
@@ -306,109 +375,88 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="user10Entities" annotation:LazyLoadingEnabled="true">
-          <EntitySet Name="materials" EntityType="Self.materials" />
-          <EntitySet Name="measure" EntityType="Self.measure" />
-          <EntitySet Name="possible_supply" EntityType="Self.possible_supply" />
-          <EntitySet Name="supply" EntityType="Self.supply" />
-          <EntitySet Name="supply_type" EntityType="Self.supply_type" />
-          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" />
-          <EntitySet Name="material_type" EntityType="Self.material_type" />
-          <AssociationSet Name="FK_material_type_materials" Association="Self.FK_material_type_materials">
-            <End Role="materials" EntitySet="materials" />
-            <End Role="material_type" EntitySet="material_type" />
-          </AssociationSet>
-          <AssociationSet Name="FK_materials_measure" Association="Self.FK_materials_measure">
-            <End Role="measure" EntitySet="measure" />
-            <End Role="materials" EntitySet="materials" />
-          </AssociationSet>
-          <AssociationSet Name="FK_possible_supply_materials" Association="Self.FK_possible_supply_materials">
-            <End Role="materials" EntitySet="materials" />
-            <End Role="possible_supply" EntitySet="possible_supply" />
-          </AssociationSet>
-          <AssociationSet Name="FK_possible_supply_supply" Association="Self.FK_possible_supply_supply">
-            <End Role="supply" EntitySet="supply" />
-            <End Role="possible_supply" EntitySet="possible_supply" />
-          </AssociationSet>
-          <AssociationSet Name="FK_supply_supply_type" Association="Self.FK_supply_supply_type">
-            <End Role="supply_type" EntitySet="supply_type" />
-            <End Role="supply" EntitySet="supply" />
-          </AssociationSet>
-        </EntityContainer>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
         <EntityContainerMapping StorageEntityContainer="Хранилище user10ModelContainer" CdmEntityContainer="user10Entities">
+          <EntitySetMapping Name="material_type">
+            <EntityTypeMapping TypeName="user10Model.material_type">
+              <MappingFragment StoreEntitySet="material_type">
+                <ScalarProperty Name="material_type1" ColumnName="material_type" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="materials">
             <EntityTypeMapping TypeName="user10Model.materials">
               <MappingFragment StoreEntitySet="materials">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="material_name" ColumnName="material_name" />
-                <ScalarProperty Name="material_type" ColumnName="material_type" />
-                <ScalarProperty Name="image" ColumnName="image" />
-                <ScalarProperty Name="price" ColumnName="price" />
-                <ScalarProperty Name="amount" ColumnName="amount" />
-                <ScalarProperty Name="min_amount" ColumnName="min_amount" />
-                <ScalarProperty Name="pack_amount" ColumnName="pack_amount" />
                 <ScalarProperty Name="measure" ColumnName="measure" />
+                <ScalarProperty Name="pack_amount" ColumnName="pack_amount" />
+                <ScalarProperty Name="min_amount" ColumnName="min_amount" />
+                <ScalarProperty Name="amount" ColumnName="amount" />
+                <ScalarProperty Name="price" ColumnName="price" />
+                <ScalarProperty Name="image" ColumnName="image" />
+                <ScalarProperty Name="material_type" ColumnName="material_type" />
+                <ScalarProperty Name="material_name" ColumnName="material_name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="measure">
             <EntityTypeMapping TypeName="user10Model.measure">
               <MappingFragment StoreEntitySet="measure">
-                <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="measure1" ColumnName="measure" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="possible_supply">
             <EntityTypeMapping TypeName="user10Model.possible_supply">
               <MappingFragment StoreEntitySet="possible_supply">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="Material_name" ColumnName="Material_name" />
                 <ScalarProperty Name="Possible_supply1" ColumnName="Possible_supply" />
+                <ScalarProperty Name="Material_name" ColumnName="Material_name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="supply">
             <EntityTypeMapping TypeName="user10Model.supply">
               <MappingFragment StoreEntitySet="supply">
-                <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="supply_name" ColumnName="supply_name" />
-                <ScalarProperty Name="supply_type" ColumnName="supply_type" />
-                <ScalarProperty Name="INN" ColumnName="INN" />
-                <ScalarProperty Name="rating" ColumnName="rating" />
                 <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="rating" ColumnName="rating" />
+                <ScalarProperty Name="INN" ColumnName="INN" />
+                <ScalarProperty Name="supply_type" ColumnName="supply_type" />
+                <ScalarProperty Name="supply_name" ColumnName="supply_name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="supply_type">
             <EntityTypeMapping TypeName="user10Model.supply_type">
               <MappingFragment StoreEntitySet="supply_type">
-                <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="supply_type1" ColumnName="supply_type" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
           <EntitySetMapping Name="sysdiagrams">
             <EntityTypeMapping TypeName="user10Model.sysdiagrams">
               <MappingFragment StoreEntitySet="sysdiagrams">
-                <ScalarProperty Name="name" ColumnName="name" />
-                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
-                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
-                <ScalarProperty Name="version" ColumnName="version" />
                 <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="material_type">
-            <EntityTypeMapping TypeName="user10Model.material_type">
-              <MappingFragment StoreEntitySet="material_type">
+          <EntitySetMapping Name="type_material">
+            <EntityTypeMapping TypeName="user10Model.type_material">
+              <MappingFragment StoreEntitySet="type_material">
+                <ScalarProperty Name="type_material1" ColumnName="type_material" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
-                <ScalarProperty Name="material_type1" ColumnName="material_type" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

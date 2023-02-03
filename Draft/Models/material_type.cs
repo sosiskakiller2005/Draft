@@ -14,9 +14,17 @@ namespace Draft.Models
     
     public partial class material_type
     {
-        public int ID { get; set; }
-        public string material_type1 { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
+        public material_type()
+        {
+            this.materials = new HashSet<materials>();
+        }
     
-        public virtual materials materials { get; set; }
+        public int ID { get; set; }
+        public int material_type1 { get; set; }
+    
+        public virtual type_material type_material { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<materials> materials { get; set; }
     }
 }

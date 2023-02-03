@@ -25,12 +25,13 @@ namespace Draft.Models
             throw new UnintentionalCodeFirstException();
         }
     
+        public virtual DbSet<material_type> material_type { get; set; }
         public virtual DbSet<materials> materials { get; set; }
         public virtual DbSet<measure> measure { get; set; }
         public virtual DbSet<possible_supply> possible_supply { get; set; }
         public virtual DbSet<supply> supply { get; set; }
         public virtual DbSet<supply_type> supply_type { get; set; }
         public virtual DbSet<sysdiagrams> sysdiagrams { get; set; }
-        public virtual DbSet<material_type> material_type { get; set; }
+        public virtual DbSet<type_material> type_material { get; set; }
     }
 }

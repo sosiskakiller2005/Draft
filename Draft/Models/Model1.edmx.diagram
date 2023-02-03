@@ -5,18 +5,20 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="3fd6759ea78249e593d96d05fd8916e1" Name="Diagram1">
-        <EntityTypeShape EntityType="user10Model.materials" Width="1.5" PointX="3" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="user10Model.measure" Width="1.5" PointX="0.75" PointY="2.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="user10Model.possible_supply" Width="1.5" PointX="5.25" PointY="2.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="user10Model.supply" Width="1.5" PointX="3" PointY="6.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="user10Model.supply_type" Width="1.5" PointX="0.75" PointY="7.375" IsExpanded="true" />
-        <EntityTypeShape EntityType="user10Model.sysdiagrams" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="user10Model.material_type" Width="1.5" PointX="5.25" PointY="5.125" IsExpanded="true" />
-        <AssociationConnector Association="user10Model.FK_material_type_materials" ManuallyRouted="false" />
-        <AssociationConnector Association="user10Model.FK_materials_measure" ManuallyRouted="false" />
-        <AssociationConnector Association="user10Model.FK_possible_supply_materials" ManuallyRouted="false" />
-        <AssociationConnector Association="user10Model.FK_possible_supply_supply" ManuallyRouted="false" />
-        <AssociationConnector Association="user10Model.FK_supply_supply_type" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="user10Model.material_type" Width="1.5" PointX="3" PointY="1.75" />
+        <EntityTypeShape EntityType="user10Model.materials" Width="1.5" PointX="5.25" PointY="1" />
+        <EntityTypeShape EntityType="user10Model.measure" Width="1.5" PointX="3" PointY="5.875" />
+        <EntityTypeShape EntityType="user10Model.possible_supply" Width="1.5" PointX="7.5" PointY="1.625" />
+        <EntityTypeShape EntityType="user10Model.supply" Width="1.5" PointX="5.25" PointY="8.375" />
+        <EntityTypeShape EntityType="user10Model.supply_type" Width="1.5" PointX="3" PointY="8.875" />
+        <EntityTypeShape EntityType="user10Model.sysdiagrams" Width="1.5" PointX="7.75" PointY="4.75" />
+        <EntityTypeShape EntityType="user10Model.type_material" Width="1.5" PointX="0.75" PointY="1.875" />
+        <AssociationConnector Association="user10Model.FK_material_type_type_material" />
+        <AssociationConnector Association="user10Model.FK_materials_material_type1" />
+        <AssociationConnector Association="user10Model.FK_materials_measure" />
+        <AssociationConnector Association="user10Model.FK_possible_supply_materials" />
+        <AssociationConnector Association="user10Model.FK_possible_supply_supply" />
+        <AssociationConnector Association="user10Model.FK_supply_supply_type" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
