@@ -23,11 +23,11 @@ namespace Draft
         public MainWindow()
         {
             InitializeComponent();
-            Models.user10Entities entities = new Models.user10Entities();
+            //Models.user10Entities entities = new Models.user10Entities();
             
-            TypesCb.ItemsSource = entities.material_type.ToList();
+            //TypesCb.ItemsSource = entities.material_type.ToList();
 
-            MaterialList.ItemsSource = entities.materials.ToList();
+            //MaterialList.ItemsSource = entities.materials.ToList();
 
         }
 

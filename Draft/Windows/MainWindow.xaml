@@ -7,14 +7,27 @@
         mc:Ignorable="d" 
         Title="MainWindow" Height="450" Width="800">
     <Grid RenderTransformOrigin="0.496,0.786">
-        <TextBox x:Name="SearchTb" HorizontalAlignment="Left" Height="23" Margin="65,37,0,0" TextWrapping="Wrap" Text="Введите для поиска" VerticalAlignment="Top" Width="235"/>
-        <ComboBox x:Name="Cb" HorizontalAlignment="Left" Margin="332,38,0,0" VerticalAlignment="Top" Width="120" RenderTransformOrigin="0.484,3.87" SelectionChanged="Materials_SelectionChanged"/>
-        <ComboBox x:Name="TypesCb" HorizontalAlignment="Left" Margin="503,38,0,0" VerticalAlignment="Top" Width="120"/>
-        <Button x:Name="exitBtn_Click" Content="Выход" HorizontalAlignment="Left" Margin="687,10,0,0" VerticalAlignment="Top" Width="75" Click="Button_Click"/>
-        <ListBox x:Name="MaterialList" HorizontalAlignment="Left" Height="270" Margin="22,130,0,0" VerticalAlignment="Top" Width="734">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+        </Grid.ColumnDefinitions>
+
+        <Grid.RowDefinitions>
+            <RowDefinition />
+
+            <RowDefinition></RowDefinition>
+        </Grid.RowDefinitions>
+        <TextBox x:Name="SearchTb" HorizontalAlignment="Center" Height="23"  TextWrapping="Wrap" Text="Введите для поиска" VerticalAlignment="Top" Width="176" Margin="0,60,0,0"/>
+        <ComboBox x:Name="Cb" Grid.Column="1" HorizontalAlignment="Center"  VerticalAlignment="top" Width="120" RenderTransformOrigin="0.484,3.87"  Margin="0,60,0,0" SelectionChanged="Materials_SelectionChanged"/>
+        <ComboBox x:Name="TypesCb" Grid.Column="2" HorizontalAlignment="Center"  VerticalAlignment="top" Margin="0,60,0,0" Width="120"/>
+        <Button x:Name="exitBtn_Click" Grid.Column="3" Content="Выход" HorizontalAlignment="Center" Margin="0,60,0,0"  VerticalAlignment="Top" Width="75" Click="Button_Click"/>
+        <ListBox x:Name="MaterialList"  HorizontalAlignment="Left" Height="185"  VerticalAlignment="top" Width="660" Grid.ColumnSpan="4" Margin="80,0,0,0" Grid.Row="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Grid>
+
 
                         <Image HorizontalAlignment="Left" Height="64" Margin="93,124,0,0" VerticalAlignment="Top" Width="86" Source="picture.png"/>
                         <TextBlock HorizontalAlignment="Left" Margin="226,121,0,0" TextWrapping="Wrap" Text="{Binding material_name}" VerticalAlignment="Top" Width="83"/>
